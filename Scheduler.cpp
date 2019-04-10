@@ -1,7 +1,7 @@
  #include<stdio.h>
 
 struct process{
-	int pid;
+	char pid[10];
 	int arrival_time;
 	int burst_time;
 	int rem_burst_time;
@@ -11,17 +11,17 @@ struct process{
 	int completition_time;
 };
 
-static int t;
+static int t=0;
 int main()
 {	
 	int p;
 	printf("Enter number of processes\n");
 	scanf("%d",&p);
 	struct process pr[p];
-	printf("Enter Process ID, Arrival Time, Burst time and Priority Queue respectively for all processes\n");
+	printf("Enter Process ID, Arrival Time, Burst time and Priority Queue(1/2) respectively for all processes\n");
 	for(int i=0;i<p;i++)
 	{
-		scanf("%d",&pr[i].pid);
+		scanf("%s",&pr[i].pid);
 		scanf("%d",&pr[i].arrival_time);
 		scanf("%d",&pr[i].burst_time);
 		scanf("%d",&pr[i].priority_queue);
@@ -79,34 +79,41 @@ int main()
         }
     }
    
-	
+	printf("\n\nTime index \t\t Execution remark\n---------\t\t---------------------\n");
 		
 	// processing 
 	
-	int RQ1[p],RQ2[p],k1=0,k2=0,index=0,tempx;
+	int RQ1[p],RQ2[p],k1=-1,k2=-1,index=0,tempx;
 	for(int i=min_arr_time;i<min_arr_time+tbt;i++)
 	{
+		printf("%d\t\t\t",i+1);
 		//managing ready queue
 		
 		for(int j=0;j<p;j++)
 		{
 			if(pr[j].arrival_time==i&&pr[j].priority_queue==1) //SRTF
 			{
-				RQ1[k1]=j;k1++;
+				k1++;
+				RQ1[k1]=j;
 			}
 			else if(pr[j].arrival_time==i&&pr[j].priority_queue==2) //Round Robin
 			{
-				RQ2[k2]=j;k2++;
+				k2++;
+				RQ2[k2]=j;
 			}
 		}
+		
 	
 		
-		if(k1==0&&k2==0)
+		if(k1<0&&k2<0)
 		{
+			printf("Empty Ready Queues, IDLE CPU!!\n");
+			tbt++;
 		continue;
 		}
-		else if(k1!=0) // SRTF
-		{	
+		else if(k1>=0) // SRTF
+		{		
+		
 			t=0;
 			//finding process with minimum remaining burst time
 		    int minimum = pr[RQ1[0]].rem_burst_time;
@@ -120,11 +127,13 @@ int main()
 		        }
 		    }	
 			
-			
+		
+		
 			//executing process
 			
-			 pr[RQ1[index]].rem_burst_time =  pr[RQ1[index]].rem_burst_time-1;
+				 pr[RQ1[index]].rem_burst_time =  pr[RQ1[index]].rem_burst_time-1;
 			 //remaing burst time decremented
+			 
 			 
 			 if(pr[RQ1[index]].rem_burst_time<=0)
 			 {
@@ -135,17 +144,22 @@ int main()
 				 }
 				 k1--;
 			 }	
+			printf("(SRTF) Executing : %s\n",pr[RQ1[index]].pid);
+		
 		}
 		
 		
-		else //Round Robin
+		else if(k1<0&&k2>=0) //Round Robin
 		{
+		
+		
+			printf("(Round Robin) Executing : %s\n",pr[RQ2[0]].pid);
 			if(t==0)
 			{
 				if(pr[RQ2[0]].rem_burst_time>1)
 				{
 					pr[RQ2[0]].rem_burst_time--;
-					t++;
+					t=1;
 				}
 				else
 				{
@@ -207,12 +221,29 @@ int main()
 	pr[i].waiting_time = pr[i].turnaround_time - pr[i].burst_time;
 	
 	//displaying data
-	printf("Process ID \t Arrival Time \t Burst Time \t Completion time \t Turnaround time \t Waiting time\n");
+	printf("\n\nProcess ID \t Arrival Time \t Burst Time \t Completion time \t Turnaround time \t Waiting time\n----------- \t ----------- \t ---------- \t --------------- \t ---------------- \t -------------\n");
 	for(int i=0;i<p;i++)
 	{
-		printf("%d \t\t %d \t\t %d \t\t %d \t\t\t %d \t\t\t %d \n",pr[i].pid,pr[i].arrival_time,pr[i].burst_time,pr[i].completition_time,pr[i].turnaround_time,pr[i].waiting_time);
+		printf("%s \t\t %d \t\t %d \t\t %d \t\t\t %d \t\t\t %d \n",pr[i].pid,pr[i].arrival_time,pr[i].burst_time,pr[i].completition_time,pr[i].turnaround_time,pr[i].waiting_time);
 	}
 	
+	int sum=0;
+	float avg_wt,avg_tat;
+	//calculating average waiting time
+	for(int x=0;x<p;x++)
+	{
+		sum=sum + pr[x].waiting_time;
+	}
+	avg_wt = sum/p;
+	sum = 0;
 	
+		//calculating average turn around time
+	for(int x=0;x<p;x++)
+	{
+		sum=sum + pr[x].turnaround_time;
+	}
+	avg_tat = sum/p;
+	
+	printf("\n\n Average waiting time : %.2f \n Average Turnaround time : %.2f",avg_wt,avg_tat);
 	return 0;
 }
