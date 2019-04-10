@@ -11,6 +11,7 @@ struct process{
 	int completition_time;
 };
 
+static int t;
 int main()
 {	
 	int p;
@@ -82,7 +83,7 @@ int main()
 		
 	// processing 
 	
-	int RQ1[p],RQ2[p],k1=0,k2=0,index;
+	int RQ1[p],RQ2[p],k1=0,k2=0,index=0,tempx;
 	for(int i=min_arr_time;i<min_arr_time+tbt;i++)
 	{
 		//managing ready queue
@@ -105,7 +106,8 @@ int main()
 		continue;
 		}
 		else if(k1!=0) // SRTF
-		{
+		{	
+			t=0;
 			//finding process with minimum remaining burst time
 		    int minimum = pr[RQ1[0]].rem_burst_time;
 		   	index = 0;
@@ -133,6 +135,60 @@ int main()
 				 }
 				 k1--;
 			 }	
+		}
+		
+		
+		else //Round Robin
+		{
+			if(t==0)
+			{
+				if(pr[RQ2[0]].rem_burst_time>1)
+				{
+					pr[RQ2[0]].rem_burst_time--;
+					t++;
+				}
+				else
+				{
+					pr[RQ2[0]].rem_burst_time=0;
+					pr[RQ2[0]].completition_time=i+1;
+					
+					for(int x=0;x<k2;x++)
+					{
+						RQ2[x]=RQ2[x+1];
+					}
+					k2--;
+					t=0;
+				}
+			}
+			
+			else if(t==1)
+			{
+				if(pr[RQ2[0]].rem_burst_time>1)
+				{
+					pr[RQ2[0]].rem_burst_time--;
+					t=0;
+					 
+					tempx = RQ2[0];
+					for(int x=0;x<k2;x++)
+						RQ2[x]=RQ2[x+1];
+					
+					RQ2[k2]=tempx; 
+					 
+				}
+				else
+				{
+					pr[RQ2[0]].rem_burst_time=0;
+					pr[RQ2[0]].completition_time=i+1;
+					
+					for(int x=0;x<k2;x++)
+					{
+						RQ2[x]=RQ2[x+1];
+					}
+					k2--;
+					t=0;
+				}
+			}
+			
 		}
 		
 	
