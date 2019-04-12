@@ -11,7 +11,7 @@ struct process{
 	int completition_time;
 };
 
-static int t=0;
+static int t=0,flag=0;
 int main()
 {	
 	int p;
@@ -113,6 +113,8 @@ int main()
 		}
 		else if(k1>=0) // SRTF
 		{		
+			if(t==1)
+				flag=1;
 		
 			t=0;
 			//finding process with minimum remaining burst time
@@ -153,9 +155,21 @@ int main()
 		{
 		
 		
-			printf("(Round Robin) Executing : %s\n",pr[RQ2[0]].pid);
+		
 			if(t==0)
-			{
+			{	
+				if(flag==1&&k2>=0)
+				{
+					tempx = RQ2[0];
+					for(int x=0;x<k2;x++)
+						RQ2[x]=RQ2[x+1];
+					
+					RQ2[k2]=tempx; 
+				}
+					flag=0;
+					printf("(Round Robin) Executing : %s\n",pr[RQ2[0]].pid);
+				
+				
 				if(pr[RQ2[0]].rem_burst_time>1)
 				{
 					pr[RQ2[0]].rem_burst_time--;
@@ -174,9 +188,10 @@ int main()
 					t=0;
 				}
 			}
-			
+		
 			else if(t==1)
 			{
+					printf("(Round Robin) Executing : %s\n",pr[RQ2[0]].pid);
 				if(pr[RQ2[0]].rem_burst_time>1)
 				{
 					pr[RQ2[0]].rem_burst_time--;
