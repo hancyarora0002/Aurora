@@ -1,5 +1,5 @@
  #include<stdio.h>
-
+#include<string.h>
 struct process{
 	char pid[10];
 	int arrival_time;
@@ -25,9 +25,16 @@ int main()
 		scanf("%d",&pr[i].arrival_time);
 		scanf("%d",&pr[i].burst_time);
 		scanf("%d",&pr[i].priority_queue);
+		for(int x=0;x<i;x++)
+			if(strcmp(pr[i].pid,pr[x].pid)==0)
+			{
+				printf("Process IDs cannot be same!!! Enter this process's data again'\n");
+				i--;
+				break;
+			}
 		if(pr[i].burst_time<0||pr[i].arrival_time<0||pr[i].priority_queue<1||pr[i].priority_queue>2)
 		{
-			printf("!!!!!Invalid process entry/entries\n Enter this process data again\n");
+			printf("!!!!!Invalid process entry/entries\n Enter this process's' data again\n");
 			i--;
 		}
 		else
@@ -82,11 +89,13 @@ int main()
 	printf("\n\nTime index \t\t Execution remark\n---------\t\t---------------------\n");
 		
 	// processing 
+	int s=min_arr_time;
+	int RQ1[p],RQ2[p],k1=-1,k2=-1,index=0,tempx,minimum,cnt=0,e=0;
+	char ppid[10];
 	
-	int RQ1[p],RQ2[p],k1=-1,k2=-1,index=0,tempx;
 	for(int i=min_arr_time;i<min_arr_time+tbt;i++)
 	{
-		printf("%d\t\t\t",i+1);
+		
 		//managing ready queue
 		
 		for(int j=0;j<p;j++)
@@ -107,7 +116,19 @@ int main()
 		
 		if(k1<0&&k2<0)
 		{
-			printf("Empty Ready Queues, IDLE CPU!!\n");
+			if(e!=0){
+					printf("%d-%d\t\t\t",s,i);
+							s=i;
+						for(int x =0;x<p;x++)
+										if(strcmp(ppid,pr[x].pid)==0&&pr[x].priority_queue==2)
+											printf("(Round Robin) Executing : %s\n",ppid);
+										else if(strcmp(ppid,pr[x].pid)==0&&pr[x].priority_queue==1)
+											printf("(SRTF) Executing : %s\n",ppid);
+					printf("-----------Empty Ready Queues, IDLE CPU!!!-----------\n");
+					e=0;
+					cnt=0;
+			}
+			s++;
 			tbt++;
 		continue;
 		}
@@ -118,22 +139,54 @@ int main()
 		
 			t=0;
 			//finding process with minimum remaining burst time
-		    int minimum = pr[RQ1[0]].rem_burst_time;
+		    if(i==min_arr_time)
+			{
+		    minimum = pr[RQ1[0]].rem_burst_time;
 		   	index = 0;
-		    for (int z = 1; z < k1; z++)
+		   	}
+		   	
+		    for (int z = 1; z <= k1; z++)
 		    {
 		        if (pr[RQ1[z]].rem_burst_time < minimum)
 		        {
 		           minimum = pr[RQ1[z]].rem_burst_time;
 				index = z;
 		        }
-		    }	
+		    }
+				
+			if(e==0)
+			{
+		    strcpy(ppid,pr[RQ1[index]].pid);
+		    e++;
+		   	}
 			
 		
 		
 			//executing process
 			
+			if(strcmp(ppid,pr[RQ1[index]].pid)!=0)
+				{
+							printf("%d-%d\t\t\t",s,i);
+							s=i;
+						for(int x =0;x<p;x++)
+										if(strcmp(ppid,pr[x].pid)==0&&pr[x].priority_queue==2)
+											printf("(Round Robin) Executing : %s\n",ppid);
+										else if(strcmp(ppid,pr[x].pid)==0&&pr[x].priority_queue==1)
+											printf("(SRTF) Executing : %s\n",ppid);
+						strcpy(ppid,pr[RQ1[index]].pid);
+				}
+				else if(i==min_arr_time+tbt-1)
+				{
+						printf("%d-%d\t\t\t",s,i+1);
+						for(int x =0;x<p;x++)
+										if(strcmp(ppid,pr[x].pid)==0&&pr[x].priority_queue==2)
+											printf("(Round Robin) Executing : %s\n",ppid);
+										else if(strcmp(ppid,pr[x].pid)==0&&pr[x].priority_queue==1)
+											printf("(SRTF) Executing : %s\n",ppid);
+				}
+			
 				 pr[RQ1[index]].rem_burst_time =  pr[RQ1[index]].rem_burst_time-1;
+				 minimum = pr[RQ1[index]].rem_burst_time;
 			 //remaing burst time decremented
 			 
 			 
@@ -145,17 +198,29 @@ int main()
 			 	 	RQ1[z]=RQ1[z+1];
 				 }
 				 k1--;
+				 minimum = pr[RQ1[0]].rem_burst_time;
+		   		index = 0; 
 			 }	
-			printf("(SRTF) Executing : %s\n",pr[RQ1[index]].pid);
+			
 		
 		}
+		
+		
+		
 		
 		
 		else if(k1<0&&k2>=0) //Round Robin
 		{
 		
+			if(e==0)
+			{
+		    strcpy(ppid,pr[RQ2[0]].pid);
+		    e++;
+		   	}
+			
 		
-		
+				
+				
 			if(t==0)
 			{	
 				if(flag==1&&k2>=0)
@@ -167,7 +232,40 @@ int main()
 					RQ2[k2]=tempx; 
 				}
 					flag=0;
-					printf("(Round Robin) Executing : %s\n",pr[RQ2[0]].pid);
+				
+							if(strcmp(ppid,pr[RQ2[0]].pid)!=0)
+						{
+									printf("%d-%d\t\t\t",s,i);
+									s=i;
+									for(int x =0;x<p;x++)
+										if(strcmp(ppid,pr[x].pid)==0&&pr[x].priority_queue==2)
+											printf("(Round Robin) Executing : %s\n",ppid);
+										else if(strcmp(ppid,pr[x].pid)==0&&pr[x].priority_queue==1)
+											printf("(SRTF) Executing : %s\n",ppid);
+								strcpy(ppid,pr[RQ2[0]].pid);
+								cnt=0;
+						}
+						else if(cnt==2)
+						{
+								printf("%d-%d\t\t\t",s,i);
+								s=i;
+								for(int x =0;x<p;x++)
+										if(strcmp(ppid,pr[x].pid)==0&&pr[x].priority_queue==2)
+											printf("(Round Robin) Executing : %s\n",ppid);
+										else if(strcmp(ppid,pr[x].pid)==0&&pr[x].priority_queue==1)
+											printf("(SRTF) Executing : %s\n",ppid);
+											cnt=0;
+						}
+						else if(i==min_arr_time+tbt-1)
+						{
+								printf("%d-%d\t\t\t",s,i+1);
+								for(int x =0;x<p;x++)
+										if(strcmp(ppid,pr[x].pid)==0&&pr[x].priority_queue==2)
+											printf("(Round Robin) Executing : %s\n",ppid);
+										else if(strcmp(ppid,pr[x].pid)==0&&pr[x].priority_queue==1)
+											printf("(SRTF) Executing : %s\n",ppid);
+											cnt=0;
+						}
 				
 				
 				if(pr[RQ2[0]].rem_burst_time>1)
@@ -186,12 +284,47 @@ int main()
 					}
 					k2--;
 					t=0;
+					cnt=0;
 				}
 			}
 		
 			else if(t==1)
 			{
-					printf("(Round Robin) Executing : %s\n",pr[RQ2[0]].pid);
+						if(strcmp(ppid,pr[RQ2[0]].pid)!=0)
+						{
+									printf("%d-%d\t\t\t",s,i);
+									s=i;
+								for(int x =0;x<p;x++)
+										if(strcmp(ppid,pr[x].pid)==0&&pr[x].priority_queue==2)
+											printf("(Round Robin) Executing : %s\n",ppid);
+										else if(strcmp(ppid,pr[x].pid)==0&&pr[x].priority_queue==1)
+											printf("(SRTF) Executing : %s\n",ppid);
+								strcpy(ppid,pr[RQ2[0]].pid);
+								cnt=0;
+						}
+						else if(cnt==2)
+						{
+								printf("%d-%d\t\t\t",s,i);
+								s=i;
+								for(int x =0;x<p;x++)
+										if(strcmp(ppid,pr[x].pid)==0&&pr[x].priority_queue==2)
+											printf("(Round Robin) Executing : %s\n",ppid);
+										else if(strcmp(ppid,pr[x].pid)==0&&pr[x].priority_queue==1)
+											printf("(SRTF) Executing : %s\n",ppid);
+											cnt=0;
+						}
+						else if(i==min_arr_time+tbt-1)
+						{
+								printf("%d-%d\t\t\t",s,i+1);
+								for(int x =0;x<p;x++)
+										if(strcmp(ppid,pr[x].pid)==0&&pr[x].priority_queue==2)
+											printf("(Round Robin) Executing : %s\n",ppid);
+										else if(strcmp(ppid,pr[x].pid)==0&&pr[x].priority_queue==1)
+											printf("(SRTF) Executing : %s\n",ppid);
+											
+						}
+				
+						
 				if(pr[RQ2[0]].rem_burst_time>1)
 				{
 					pr[RQ2[0]].rem_burst_time--;
@@ -217,6 +350,8 @@ int main()
 					t=0;
 				}
 			}
+				if( strcmp(ppid,pr[RQ2[0]].pid)==0)
+				cnt++;
 			
 		}
 		
