@@ -14,11 +14,13 @@ struct process{
 static int t=0,flag=0;
 int main()
 {	
-	int p;
+	
+	int p,b=0;
 	printf("Enter number of processes\n");
 	scanf("%d",&p);
+	
 	struct process pr[p];
-	printf("Enter Process ID, Arrival Time, Burst time and Priority Queue(1/2) respectively for all processes\n");
+	printf("Enter Process ID(String), Arrival Time(int), Burst time(int) and Priority Queue(1/2) respectively for all processes\n");
 	for(int i=0;i<p;i++)
 	{
 		scanf("%s",&pr[i].pid);
@@ -28,18 +30,24 @@ int main()
 		for(int x=0;x<i;x++)
 			if(strcmp(pr[i].pid,pr[x].pid)==0)
 			{
-				printf("Process IDs cannot be same!!! Enter this process's data again'\n");
+				printf("\nProcess IDs cannot be same!!! Enter this process's data again'\n---------------------------------------------------------------\n");
 				i--;
+				b++;
 				break;
 			}
-		if(pr[i].burst_time<0||pr[i].arrival_time<0||pr[i].priority_queue<1||pr[i].priority_queue>2)
+		
+		if(b!=0){
+			b=0;continue;
+		}
+		else if(pr[i].burst_time<0||pr[i].arrival_time<0||pr[i].priority_queue<1||pr[i].priority_queue>2)
 		{
-			printf("!!!!!Invalid process entry/entries\n Enter this process's' data again\n");
+			printf("\n!!!!!Invalid process entry/entries\n Enter this process's data again\n-----------------------------------\n");
 			i--;
 		}
 		else
 		{
 		pr[i].rem_burst_time=pr[i].burst_time;
+		printf("----------\n");
 		}
 		
 	}
@@ -95,7 +103,7 @@ int main()
 	
 	for(int i=min_arr_time;i<min_arr_time+tbt;i++)
 	{
-		
+	
 		//managing ready queue
 		
 		for(int j=0;j<p;j++)
@@ -256,7 +264,8 @@ int main()
 											printf("(SRTF) Executing : %s\n",ppid);
 											cnt=0;
 						}
-						else if(i==min_arr_time+tbt-1)
+						
+						if(i==min_arr_time+tbt-1)
 						{
 								printf("%d-%d\t\t\t",s,i+1);
 								for(int x =0;x<p;x++)
@@ -265,6 +274,7 @@ int main()
 										else if(strcmp(ppid,pr[x].pid)==0&&pr[x].priority_queue==1)
 											printf("(SRTF) Executing : %s\n",ppid);
 											cnt=0;
+											
 						}
 				
 				
@@ -313,7 +323,8 @@ int main()
 											printf("(SRTF) Executing : %s\n",ppid);
 											cnt=0;
 						}
-						else if(i==min_arr_time+tbt-1)
+						
+						if(i==min_arr_time+tbt-1)
 						{
 								printf("%d-%d\t\t\t",s,i+1);
 								for(int x =0;x<p;x++)
