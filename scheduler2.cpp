@@ -206,7 +206,7 @@ int main()
 	{
 		sum=sum + pr[x].waiting_time;
 	}
-	avg_wt = sum/p;
+	avg_wt = (float)sum/p;
 	sum = 0;
 	
 		//calculating average turn around time
@@ -214,7 +214,7 @@ int main()
 	{
 		sum=sum + pr[x].turnaround_time;
 	}
-	avg_tat = sum/p;
+	avg_tat = (float)sum/p;
 	
 	printf("\n\n Average waiting time : %.2f \n Average Turnaround time : %.2f",avg_wt,avg_tat);
 	return 0;
