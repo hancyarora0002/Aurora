@@ -13,11 +13,11 @@ struct process{
 
 int main()
 {	
-	int p;
+	int p,b=0;
 	printf("Enter number of processes\n");
 	scanf("%d",&p);
 	struct process pr[p];
-	printf("Enter Process ID, Arrival Time and Burst time respectively for all processes\n");
+	printf("Enter Process ID(String), Arrival Time(int >=0) and Burst time(int >0) respectively for all processes\n");
 	for(int i=0;i<p;i++)
 	{
 		scanf("%s",&pr[i].pid);
@@ -26,18 +26,24 @@ int main()
 		for(int x=0;x<i;x++)
 			if(strcmp(pr[i].pid,pr[x].pid)==0)
 			{
-				printf("Process IDs cannot be same!!! Enter this process's data again'\n");
+				printf("\nProcess IDs cannot be same!!! Enter this process's data again'\n---------------------------------------------------------------\n");
 				i--;
+				b++;
+				break;
 				
 			}
-		if(pr[i].burst_time<0||pr[i].arrival_time<0)
+			if(b!=0){
+			b=0;continue;
+		}
+		else if(pr[i].burst_time<=0||pr[i].arrival_time<0)
 		{
-			printf("!!!!!Invalid process entry/entries\n Enter this process data again\n");
+			printf("\n!!!!!Invalid process entry/entries\n Enter this process's data again\n-----------------------------------\n");
 			i--;
 		}
 		else
 		{
 		pr[i].rem_burst_time=pr[i].burst_time;
+		printf("----------\n");
 		}
 		
 	}
