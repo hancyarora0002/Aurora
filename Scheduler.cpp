@@ -20,7 +20,7 @@ int main()
 	scanf("%d",&p);
 	
 	struct process pr[p];
-	printf("Enter Process ID(String), Arrival Time(int), Burst time(int) and Priority Queue(1/2) respectively for all processes\n");
+	printf("Enter Process ID(String), Arrival Time(int >=0), Burst time(int >0) and Priority Queue(1/2) respectively for all processes\n");
 	for(int i=0;i<p;i++)
 	{
 		scanf("%s",&pr[i].pid);
@@ -39,7 +39,7 @@ int main()
 		if(b!=0){
 			b=0;continue;
 		}
-		else if(pr[i].burst_time<0||pr[i].arrival_time<0||pr[i].priority_queue<1||pr[i].priority_queue>2)
+		else if(pr[i].burst_time<=0||pr[i].arrival_time<0||pr[i].priority_queue<1||pr[i].priority_queue>2)
 		{
 			printf("\n!!!!!Invalid process entry/entries\n Enter this process's data again\n-----------------------------------\n");
 			i--;
@@ -399,6 +399,7 @@ int main()
 	sum = 0;
 	
 		//calculating average turn around time
+		
 	for(int x=0;x<p;x++)
 	{
 		sum=sum + pr[x].turnaround_time;
